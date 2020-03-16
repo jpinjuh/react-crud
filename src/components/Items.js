@@ -127,10 +127,13 @@ export default class Items extends Component {
 
     return (
         <div>
-          <EditModal onOpen={this.state.open} closeModal={this.handleClose} value={this.state.selectedItem} onRefresh={this.getData}></EditModal>
-          <div style={style}>
-            <Alert severity="success">This is a success alert — check it out!</Alert>
-          </div>
+          <EditModal 
+            onOpen={this.state.open} 
+            closeModal={this.handleClose} 
+            value={this.state.selectedItem} 
+            onRefresh={this.getData}>
+          </EditModal>
+
           <MUIDataTable
             title={<AddModal onRefresh={this.getData}></AddModal>}
             data={this.state.items}

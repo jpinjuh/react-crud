@@ -23,24 +23,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function TransitionsModal(props) {
-  
+  const {onOpen, closeModal, value} = props;
   const classes = useStyles();
-  const [ open, setOpen] = React.useState(false);
-  const [text, setText] = React.useState(props.onId.items.find(item => item.id === props.onId.id).name);
+  const [text, setText] = React.useState(value[1]);
+
+  useEffect(() => {
+    setText(value[1])
+  }, [value[1]])
  
-  const gg = props.onId.items.find(item => item.id === props.onId.id).name;
   const handleChange = event => {
-    setText({text: event.target.value});
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-    console.log(props.onId.id);
-    console.log(gg)
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    setText(event.target.value);
   };
 
   const editItem = (event) => {
@@ -57,42 +49,28 @@ export default function TransitionsModal(props) {
         })
     };
     
-    fetch("http://192.168.2.36:5000/items/" + props.onId.id , requestOptions).then((response) => {
+    fetch("http://192.168.2.36:5000/items/" + value[0] , requestOptions).then((response) => {
         return response.json();
     }).then((result) => {
       props.onRefresh();
-      handleClose();
+      closeModal();
     });
   }  
 
-  useEffect(() => {
-    console.log('props.onId', props.onId)
-    
-  }, [props.onId])
-
   return (
-   
-
     <div>
-      <Button 
-        color="primary" 
-        variant="contained"
-        disableElevation
-        onClick={handleOpen}
-      >Edit</Button>
-
       <Modal
         aria-labelledby="transition-modal-title"
         className={classes.modal}
-        open={open}
-        onClose={handleClose}
+        open={onOpen}
+        onClose={() => closeModal()}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={onOpen}>
           <div className={classes.paper}>
             <Box display="flex" flexDirection="column" p={1}>
               <Box p={1}>
@@ -112,16 +90,16 @@ export default function TransitionsModal(props) {
                   <Button
                   variant="contained"
                   disableElevation
-                  onClick={handleClose}
+                  onClick={()=> closeModal()}
                   >Cancel</Button>
                 </Box>
 
                 <Box>
                   <Button
-                  color="primary"
-                  variant="contained"
-                  disableElevation
-                  onClick={editItem}
+                    color="primary"
+                    variant="contained"
+                    disableElevation
+                    onClick={editItem}
                   >Potvrdi</Button>
                 </Box>
               </Box>

@@ -10,7 +10,9 @@ import Button from '@material-ui/core/Button';
 export default class Items extends Component {
   state = {
     items: [], 
-    text: ''
+    text: '',
+    open: false,
+    selectedItem: ""
   }
 
   constructor(props){
@@ -54,9 +56,12 @@ export default class Items extends Component {
   }
 
   handleOpen = () => {
-    const [open, setOpen] = React.useState(false);
-    setOpen(true);
-  }
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
 
   render() {
     const columns = [
@@ -82,8 +87,7 @@ export default class Items extends Component {
         options: {
           filter: true,
           sort: true,
-          customBodyRender: value => {
-            // const foundItem = this.state.items.find(item => item.id === value);
+          customBodyRender: (value, tableMeta) => {
             return (
               <div>
                 <Box p={1} display="flex">
@@ -96,7 +100,12 @@ export default class Items extends Component {
                     >Delete</Button>
                   </Box>
                   <Box>
-                    <EditModal onId={{items: this.state.items, id: value}} onRefresh={this.getData}></EditModal>
+                    <Button 
+                      color="primary" 
+                      variant="contained"
+                      disableElevation
+                      onClick={() => {this.handleOpen(); this.setState({selectedItem: tableMeta.rowData});}}
+                    >Edit</Button>
                   </Box>
                 </Box>
               </div>                       
@@ -105,6 +114,7 @@ export default class Items extends Component {
         }
       }
     ]
+    
     const options = {
       filterType: "dropdown",
       responsive: "scroll",
@@ -117,6 +127,7 @@ export default class Items extends Component {
 
     return (
         <div>
+          <EditModal onOpen={this.state.open} closeModal={this.handleClose} value={this.state.selectedItem} onRefresh={this.getData}></EditModal>
           <div style={style}>
             <Alert severity="success">This is a success alert — check it out!</Alert>
           </div>
